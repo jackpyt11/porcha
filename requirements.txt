@@ -1,3 +1,7 @@
 flask>=3.0.0
 pdfkit>=1.0.0
 qrcode[pil]>=7.4.2
+# production / deployment helpers
+gunicorn>=20.1.0  # Linux/Unix WSGI server
+waitress>=2.1.0   # Windows-friendly WSGI server (optional)
+python-dotenv>=1.0.0

@@ -10,11 +10,29 @@ import base64
 import tempfile
 from io import BytesIO
 
+# load environment variables from a `.env` file in development
+# note: this requires the python-dotenv package which is listed
+# in requirements.txt. In production you may not have a .env file
+# and the variables will instead come from the real environment.
+from dotenv import load_dotenv
+load_dotenv()
+
 app = Flask(__name__)
 
-# আপনার পিসির নির্দিষ্ট পাথ অনুযায়ী কনফিগারেশন (raw string - উইন্ডোজে সঠিকভাবে চিনতে সহায়ক)
-path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
-config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+# wkhtmltopdf path can come from an environment variable so the
+# application is portable between development and production servers.
+# Windows users may still keep a hardcoded default, but the env var
+# overrides it. On Linux/Heroku deploys you should install wkhtmltopdf
+# system‑wide and set WKHTMLTOPDF_PATH accordingly.
+path_wkhtmltopdf = os.environ.get(
+    'WKHTMLTOPDF_PATH',
+    r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+)
+
+if path_wkhtmltopdf:
+    config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+else:
+    config = None  # will be checked later and error raised if missing
 
 
 @app.route('/')
@@ -139,10 +157,12 @@ def generate_pdf():
     }
 
     if not config:
+        # Fail early if wkhtmltopdf is unavailable; helps in production
+        # when the binary isn't installed or the path env var is missing.
         raise RuntimeError(
-            "wkhtmltopdf পাওয়া যাচ্ছে না। "
-            "ইন্সটল করুন: https://wkhtmltopdf.org/downloads.html "
-            "অথবা WKHTMLTOPDF_PATH এনভায়রনমেন্ট ভেরিয়েবল সেট করুন।"
+            "wkhtmltopdf executable not found. "
+            "Please install it from https://wkhtmltopdf.org/downloads.html "
+            "and set the WKHTMLTOPDF_PATH environment variable appropriately."
         )
 
     def file_url(path):
@@ -166,7 +186,11 @@ def generate_pdf():
     return send_file(pdf_bytes, mimetype='application/pdf', as_attachment=True, download_name=pdf_filename)
 
 
+# expose the Flask app for WSGI servers (gunicorn, uwsgi, etc.)
+# a simple `python app.py` will still work (useful for development), but
+# production deployments should rely on a proper WSGI server.
 if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5001))
-    app.run(debug=True, port=port)
+    debug_mode = os.environ.get('FLASK_DEBUG', '0') in ('1', 'true', 'True')
+    app.run(debug=debug_mode, port=port, host='0.0.0.0')
