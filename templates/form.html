@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>খতিয়ান পর্চা জেনারেটর - ইনপুট ফরম</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', 'Nirmala UI', sans-serif; max-width: 600px; margin: 2rem auto; padding: 1rem; background: #f5f5f5; }
+        h1 { color: #1a5f2a; font-size: 1.5rem; margin-bottom: 1.5rem; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; font-weight: 600; margin-bottom: 0.25rem; color: #333; }
+        input, select { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
+        input[type="file"] { padding: 0.35rem 0; }
+        button { background: #1a5f2a; color: white; border: none; padding: 0.75rem 1.5rem; font-size: 1rem; border-radius: 4px; cursor: pointer; margin-top: 0.5rem; }
+        button:hover { background: #144922; }
+        button[type="submit"] { display: block; width: 100%; max-width: 320px; margin: 1.5rem auto; padding: 1rem 1.5rem; font-size: 1.15rem; font-weight: bold; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .hint { font-size: 0.85rem; color: #666; margin-top: 0.25rem; }
+        .land-row { border: 1px solid #ccc; border-radius: 6px; padding: 10px; margin-bottom: 12px; background: #fff; }
+        .land-row-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px dashed #ddd; }
+        .land-row-fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+        .land-row-fields .form-group-wide { grid-column: 1 / -1; }
+        .btn-remove-row { background: #c00; color: #fff; border: none; padding: 4px 10px; font-size: 12px; border-radius: 4px; cursor: pointer; }
+        .btn-remove-row:hover { background: #a00; }
+        .btn-add { background: #1a5f2a; color: #fff; border: none; padding: 8px 14px; font-size: 14px; border-radius: 4px; cursor: pointer; margin-bottom: 1rem; }
+        .btn-add:hover { background: #144922; }
+        textarea { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; font-family: inherit; resize: vertical; }
+    </style>
+</head>
+<body>
+    <h1>খতিয়ান পর্চা জেনারেটর</h1>
+    <form action="/generate-pdf" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="khotian_no">খতিয়ান নং</label>
+            <input type="text" id="khotian_no" name="khotian_no" required placeholder="যেমন: ১২৩৪" value="১৪৫০">
+        </div>
+        <div class="form-group">
+            <label for="dist">জেলা</label>
+            <input type="text" id="dist" name="dist" required placeholder="যেমন: ঢাকা" value="দিনাজপুর">
+        </div>
+        <div class="form-group">
+            <label for="upazila">উপজেলা</label>
+            <input type="text" id="upazila" name="upazila" required placeholder="যেমন: সাভার" value="চিরিরবন্দর">
+        </div>
+        <div class="form-group">
+            <label for="mouza">মৌজা</label>
+            <input type="text" id="mouza" name="mouza" required placeholder="যেমন: চৌহালী" value="কিসমত নশরতপুর">
+        </div>
+        <div class="form-group">
+            <label for="jl_no">জে.এল. নং</label>
+            <input type="text" id="jl_no" name="jl_no" placeholder="যেমন: ৫৬" value="১২">
+        </div>
+        <div class="form-group">
+            <label for="owner_name">মালিকের নাম</label>
+            <input type="text" id="owner_name" name="owner_name" required placeholder="মালিকের পূর্ণ নাম" value="মোঃ আফজাল হোসেন">
+        </div>
+        <div class="form-group">
+            <label for="owner_father">পিতার নাম</label>
+            <input type="text" id="owner_father" name="owner_father" placeholder="পিতাঃ (যেমন: মোঃ অহির উদ্দীন)" value="মোঃ আকবর আলী">
+        </div>
+        <div class="form-group">
+            <label for="post_office">ডাকঘর</label>
+            <input type="text" id="post_office" name="post_office" placeholder="যেমন: ঘন্টাঘর" value="গ্রাম: রানীপুর, ডাকঘর: রানীরবন্দর">
+        </div>
+        <div class="form-group">
+            <label for="owner_address">ঠিকানা (অন্যান্য)</label>
+            <input type="text" id="owner_address" name="owner_address" placeholder="গ্রাম, উপজেলা, জেলা" value="কিসমত নশরতপুর, রানীপুর, চিরিরবন্দর, দিনাজপুর">
+        </div>
+        <div class="form-group">
+            <label for="application_no">আবেদন নং</label>
+            <input type="text" id="application_no" name="application_no" placeholder="যেমন: ৩৫৪৯৯৫৪৭" value="3595">
+        </div>
+        <div class="form-group">
+            <label for="application_date">আবেদনের তারিখ</label>
+            <input type="text" id="application_date" name="application_date" placeholder="যেমন: ২৫-০৯-২০২৩">
+        </div>
+        <div class="form-group">
+            <label for="mutation_case_no">নামজারির মামলা নং</label>
+            <input type="text" id="mutation_case_no" name="mutation_case_no" placeholder="যেমন: ৪,২৫১ (IX-I)/২০২৩-২৪">
+        </div>
+        <div class="form-group">
+            <label for="online_dcr_no">অনলাইন ডিসিআর নং</label>
+            <input type="text" id="online_dcr_no" name="online_dcr_no" placeholder="যেমন: ২৩২৭৩০০১০০৩৯৪২০">
+        </div>
+        <div class="form-group">
+            <label for="dag_no">দাগ নং</label>
+            <input type="text" id="dag_no" name="dag_no" placeholder="যেমন: ১০০">
+        </div>
+        <div class="form-group">
+            <label for="amount">পরিমাণ (একর/শতক)</label>
+            <input type="text" id="amount" name="amount" placeholder="যেমন: ১.৫০ একর">
+        </div>
+        <hr style="margin: 1rem 0; border: none; border-top: 1px solid #ddd;">
+        <h3 style="font-size: 1rem; color: #1a5f2a; margin-bottom: 0.5rem;">দাগ/প্লট অনুযায়ী জমির বিবরণ</h3>
+        <p class="hint">একের অধিক দাগ বা শতক থাকলে নিচে "আরেক সারি যোগ করুন" ক্লিক করে ফিল্ড যোগ করুন।</p>
+        <div id="land-rows-container">
+            <div class="land-row" data-row="0">
+                <div class="land-row-head">
+                    <strong>সারি #<span class="row-num">1</span></strong>
+                    <button type="button" class="btn-remove-row" title="সারি মুছুন">মুছুন</button>
+                </div>
+                <div class="land-row-fields">
+                    <div class="form-group">
+                        <label>মোট ভূমি উন্নয়ন কর</label>
+                        <input type="text" name="land_tax" placeholder="যেমন: ১০.০০">
+                    </div>
+                    <div class="form-group">
+                        <label>দাগ/প্লট নং</label>
+                        <input type="text" name="dag_plot_no" placeholder="যেমন: ১০২৯">
+                    </div>
+                    <div class="form-group">
+                        <label>জমির শ্রেণি কৃষি ৫(ক)</label>
+                        <input type="text" name="land_class_agri" placeholder="যেমন: ডাঙ্গা">
+                    </div>
+                    <div class="form-group">
+                        <label>জমির শ্রেণি অকৃষি ৫(খ)</label>
+                        <input type="text" name="land_class_non_agri" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label>দাগের মোট জমি — একর ৬(ক)</label>
+                        <input type="text" name="total_acre" placeholder="০">
+                    </div>
+                    <div class="form-group">
+                        <label>দাগের মোট জমি — শতাংশ ৬(খ)</label>
+                        <input type="text" name="total_decimal" placeholder="১০">
+                    </div>
+                    <div class="form-group">
+                        <label>অংশ (দাগের মধ্যে অত্র খতিয়ানের অংশ)</label>
+                        <input type="text" name="share_in_plot" placeholder="যেমন: ১" value="১">
+                    </div>
+                    <div class="form-group">
+                        <label>লাখের মধ্যে অ খতিয়ানের অংশ</label>
+                        <input type="text" name="lakh_share" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label>অংশানুযায়ী জমি — একর ৮(ক)</label>
+                        <input type="text" name="part_acre" placeholder="০">
+                    </div>
+                    <div class="form-group">
+                        <label>অংশানুযায়ী জমি — শতাংশ ৮(খ)</label>
+                        <input type="text" name="part_decimal" placeholder="১০">
+                    </div>
+                    <div class="form-group form-group-wide">
+                        <label>দখল/স্বত্ত বিষয়ক মন্তব্য</label>
+                        <textarea name="land_comments" rows="2" placeholder="দলিল নং, তাং, হোল্ডিং নম্বর ইত্যাদি"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" id="btn-add-land-row" class="btn-add">+ আরেক সারি যোগ করুন</button>
+
+        <hr style="margin: 1rem 0; border: none; border-top: 1px solid #ddd;">
+        <h3 style="font-size: 1rem; color: #1a5f2a; margin-bottom: 0.5rem;">ধারামতে নোট সারি (টেবিলের শেষ সারি)</h3>
+        <p class="hint">খতিয়ান টেবিলের শেষে ১৪০ ও ১১৬/১১৭ ধারার নোট সারি। খালি রাখলে ডিফল্ট মান ব্যবহার হবে।</p>
+        <div class="land-row" style="background: #f9f9f9;">
+            <div class="land-row-fields">
+                <div class="form-group form-group-wide">
+                    <label>ধারামতে নোটের লেখা (কলাম ১)</label>
+                    <input type="text" name="section_note_text" placeholder="১৪০ ও ১১৬/১১৭ ধারামতে নোট বা পরিবর্তন মায় মোকদ্দমা এবং সন।" value="১৪০ ও ১১৬/১১৭ ধারামতে নোট বা পরিবর্তন মায় মোকদ্দমা এবং সন।">
+                </div>
+                <div class="form-group">
+                    <label>অংশ (কলাম ২)</label>
+                    <input type="text" name="section_note_share" placeholder="১.০০" value="১.০০">
+                </div>
+                <div class="form-group">
+                    <label>অংশানুযায়ী একর ৮(ক)</label>
+                    <input type="text" name="section_note_part_acre" placeholder="০" value="০">
+                </div>
+                <div class="form-group">
+                    <label>অংশানুযায়ী শতাংশ ৮(খ)</label>
+                    <input type="text" name="section_note_part_decimal" placeholder="১০" value="১০">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="record_date">তারিখ (পর্চার তারিখ)</label>
+            <input type="text" id="record_date" name="record_date" placeholder="যেমন: ২২-০২-২০২৬">
+        </div>
+        <div class="form-group">
+            <label for="doc_title">শিরোনাম (পর্চার টাইটেল)</label>
+            <input type="text" id="doc_title" name="doc_title" placeholder="যেমন: খতিয়ান পর্চা (খালি রাখলে ডিফল্ট)">
+        </div>
+        <div class="form-group">
+            <label for="office_name">অফিসের নাম/ইউনিয়ন</label>
+            <input type="text" id="office_name" name="office_name" placeholder="যেমন: ইউনিয়ন ভূমি অফিস, সাভার">
+        </div>
+
+        <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #ccc;">
+        <h2 style="font-size: 1.1rem; color: #1a5f2a; margin-bottom: 0.75rem;">সিল, সই ও কর্তৃপক্ষ (৪টি ব্লক)</h2>
+        <div class="form-group">
+            <label for="seal_file">সীল আপলোড (PNG পছন্দনীয়) — সব ব্লকে একই সিল</label>
+            <input type="file" id="seal_file" name="seal_file" accept="image/png,image/jpeg,image/jpg">
+            <p class="hint">Transparent PNG দিলে পর্চায় ভালো দেখাবে।</p>
+        </div>
+        <p class="hint">প্রতি ব্লকে ওই ব্যক্তির নামের সাথে মিল রেখে সই আপলোড করুন।</p>
+        <div class="form-group">
+            <label for="sig_file_1">ব্লক ১ — সই আপলোড (ইউনিয়ন ভূমি উপ-সহকারী কর্মকর্তা)</label>
+            <input type="file" id="sig_file_1" name="sig_file_1" accept="image/png,image/jpeg,image/jpg">
+        </div>
+        <div class="form-group">
+            <label for="sig_date_1">ব্লক ১ — তারিখ</label>
+            <input type="text" id="sig_date_1" name="sig_date_1" placeholder="যেমন: ৩৩০/১২/২০২১">
+        </div>
+        <div class="form-group">
+            <label for="officer_name_1">ব্লক ১ — নাম (ইউনিয়ন ভূমি উপ-সহকারী কর্মকর্তা)</label>
+            <input type="text" id="officer_name_1" name="officer_name_1" placeholder="ডিফল্ট: মোঃ আজাদ আলী" value="মোঃ আজাদ আলী">
+        </div>
+        <div class="form-group">
+            <label for="officer_designation_1">ব্লক ১ — পদবী</label>
+            <input type="text" id="officer_designation_1" name="officer_designation_1" placeholder="ডিফল্ট: ইউনিয়ন ভূমি উপ-সহকারী কর্মকর্তা" value="ইউনিয়ন ভূমি উপ-সহকারী কর্মকর্তা">
+        </div>
+        <div class="form-group">
+            <label for="sig_file_2">ব্লক ২ — সই আপলোড (যে ব্যক্তির নাম ব্লক ২ এ আছে তার সই)</label>
+            <input type="file" id="sig_file_2" name="sig_file_2" accept="image/png,image/jpeg,image/jpg">
+        </div>
+        <div class="form-group">
+            <label for="sig_date_2">ব্লক ২ — তারিখ</label>
+            <input type="text" id="sig_date_2" name="sig_date_2" placeholder="যেমন: ১৯/১২/২০১৩">
+        </div>
+        <div class="form-group">
+            <label for="officer_name_2">ব্লক ২ — নাম (অফিস সহকারী)</label>
+            <input type="text" id="officer_name_2" name="officer_name_2" placeholder="ডিফল্ট: বিমল মহন্ত" value="বিমল মহন্ত">
+        </div>
+        <div class="form-group">
+            <label for="officer_designation_2">ব্লক ২ — পদবী</label>
+            <input type="text" id="officer_designation_2" name="officer_designation_2" placeholder="ডিফল্ট: অফিস সহকারী" value="অফিস সহকারী">
+        </div>
+        <div class="form-group">
+            <label for="sig_file_3">ব্লক ৩ — সই আপলোড (যে ব্যক্তির নাম ব্লক ৩ এ আছে তার সই)</label>
+            <input type="file" id="sig_file_3" name="sig_file_3" accept="image/png,image/jpeg,image/jpg">
+        </div>
+        <div class="form-group">
+            <label for="sig_date_3">ব্লক ৩ — তারিখ</label>
+            <input type="text" id="sig_date_3" name="sig_date_3" placeholder="যেমন: ০৭/০২/২০২৩">
+        </div>
+        <div class="form-group">
+            <label for="officer_name_3">ব্লক ৩ — নাম (সার্ভেয়ার)</label>
+            <input type="text" id="officer_name_3" name="officer_name_3" placeholder="ডিফল্ট: মো: ফিরোজ মাহমুদ" value="মো: ফিরোজ মাহমুদ">
+        </div>
+        <div class="form-group">
+            <label for="officer_designation_3">ব্লক ৩ — পদবী</label>
+            <input type="text" id="officer_designation_3" name="officer_designation_3" placeholder="ডিফল্ট: সার্ভেয়ার" value="সার্ভেয়ার">
+        </div>
+        <div class="form-group">
+            <label for="sig_file_4">ব্লক ৪ — সই আপলোড (যে ব্যক্তির নাম ব্লক ৪ এ আছে তার সই)</label>
+            <input type="file" id="sig_file_4" name="sig_file_4" accept="image/png,image/jpeg,image/jpg">
+        </div>
+        <div class="form-group">
+            <label for="sig_date_4">ব্লক ৪ — তারিখ</label>
+            <input type="text" id="sig_date_4" name="sig_date_4" placeholder="যেমন: ১৭/১১/২০২১">
+        </div>
+        <div class="form-group">
+            <label for="officer_name_4">ব্লক ৪ — নাম (সহকারী কমিশনার ভূমি)</label>
+            <input type="text" id="officer_name_4" name="officer_name_4" placeholder="ডিফল্ট: জনস্টি চাকমা" value="জনস্টি চাকমা">
+        </div>
+        <div class="form-group">
+            <label for="officer_designation_4">ব্লক ৪ — পদবী</label>
+            <input type="text" id="officer_designation_4" name="officer_designation_4" placeholder="ডিফল্ট: সহকারী কমিশনার (ভূমি)" value="সহকারী কমিশনার (ভূমি)">
+        </div>
+        <p class="hint">ব্লক ১ এ খালি রাখলে সাধারণ নাম/পদবী ব্যবহার হয়।</p>
+        <div class="form-group">
+            <label for="officer_name">সাধারণ নাম (ব্লক ১ এ খালি থাকলে)</label>
+            <input type="text" id="officer_name" name="officer_name" placeholder="যেমন: মোঃ আজাদ আলী">
+        </div>
+        <div class="form-group">
+            <label for="officer_designation">সাধারণ পদবী (ব্লক ১ এ খালি থাকলে)</label>
+            <input type="text" id="officer_designation" name="officer_designation" placeholder="যেমন: ইউনিয়ন ভূমি উপ-সহকারী কর্মকর্তা">
+        </div>
+
+        <div style="text-align: center; margin: 1.5rem 0;">
+            <button type="submit">পিডিএফ তৈরি করুন</button>
+        </div>
+    </form>
+    <script>
+        (function() {
+            var container = document.getElementById('land-rows-container');
+            var addBtn = document.getElementById('btn-add-land-row');
+            var firstRow = container.querySelector('.land-row');
+
+            function updateRowNumbers() {
+                container.querySelectorAll('.land-row').forEach(function(r, i) {
+                    var numEl = r.querySelector('.row-num');
+                    if (numEl) numEl.textContent = i + 1;
+                });
+            }
+
+            addBtn.addEventListener('click', function() {
+                var newRow = firstRow.cloneNode(true);
+                newRow.querySelectorAll('input, textarea').forEach(function(inp) { inp.value = ''; });
+                container.appendChild(newRow);
+                updateRowNumbers();
+            });
+
+            container.addEventListener('click', function(e) {
+                if (e.target.classList.contains('btn-remove-row')) {
+                    var rows = container.querySelectorAll('.land-row');
+                    if (rows.length > 1) e.target.closest('.land-row').remove();
+                    updateRowNumbers();
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

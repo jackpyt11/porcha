@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>খতিয়ান নং {{ khotian_no }}</title>
+    <link href="https://banglawebfonts.pages.dev/css/kalpurush.css" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Kalpurush', 'Siyam Rupali', 'Nirmala UI', serif;
+            font-size: 14px;
+            line-height: 1.35;
+            color: #000;
+            padding: 16px;
+            margin: 0;
+        }
+
+        /* হেডার: বামে ফরম নং, মাঝে খতিয়ান নং, ডানে QR + আবেদন তথ্য */
+        .top-row {
+            display: table;
+            width: 100%;
+            margin-bottom: 6px;
+        }
+        .top-left {
+            display: table-cell;
+            width: 28%;
+            vertical-align: top;
+            font-size: 13px;
+        }
+        .top-center {
+            display: table-cell;
+            width: 44%;
+            text-align: center;
+            vertical-align: top;
+        }
+        .top-right {
+            display: table-cell;
+            width: 28%;
+            text-align: right;
+            vertical-align: top;
+        }
+        .form-no { font-size: 13px; }
+        .khotian-title { font-size: 18px; font-weight: bold; margin: 0; }
+        /* ছবির মতো: বামে QR, ডানে আবেদন তথ্য পাশাপাশি (টেবিল যাতে PDF-এ ঠিক রেন্ডার হয়) */
+        .qr-and-info {
+            display: table;
+            border-collapse: collapse;
+        }
+        .qr-and-info .qr-box {
+            display: table-cell;
+            width: 80px;
+            max-width: 80px;
+            height: 80px;
+            vertical-align: top;
+            padding-right: 12px;
+        }
+        .qr-and-info .qr-box img { width: 80px; height: 80px; object-fit: contain; display: block; }
+        .qr-and-info .app-info {
+            display: table-cell;
+            vertical-align: top;
+            font-family: 'Kalpurush', 'Siyam Rupali', 'Nirmala UI', serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #000;
+            padding: 0;
+            text-align: left;
+        }
+        .app-info .info-line {
+            display: block;
+            margin-bottom: 2px;
+            white-space: normal;
+            word-break: break-word;
+        }
+        .app-info .info-line:last-child { margin-bottom: 0; }
+
+        /* স্থানীয় তথ্য - এক লাইন; নিচের দাগ টেবিলের উপরের দাগের সাথে মিলে একটা লাইন হবে */
+        .locality-line {
+            width: 100%;
+            border: 0.5pt solid #000;
+            border-bottom: none;
+            padding: 5px 8px;
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+
+        /* মেইন টেবিল - ফরম ৫৪৬২ এর কলাম হুবহু */
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+            font-size: 13px;
+        }
+        /* একক রেখা: প্রতিটি লাইন একবারই আঁকা (দুই রশি একসাথে হবে না) */
+        .main-table th,
+        .main-table td {
+            border: none;
+            border-right: 0.5pt solid #000;
+            border-bottom: 0.5pt solid #000;
+            padding: 4px 6px;
+            vertical-align: top;
+        }
+        .main-table th:first-child,
+        .main-table td:first-child {
+            border-left: 0.5pt solid #000;
+        }
+        .main-table thead th {
+            border-top: 0.5pt solid #000;
+        }
+        /* টেবিল হেডের নিচে একটা লাইন — tbody প্রথম সারির উপরের দাগ বন্ধ */
+        .main-table tbody tr:first-child td {
+            border-top: none;
+        }
+        .main-table th {
+            background: #f8f8f8;
+            font-weight: bold;
+            text-align: center;
+        }
+        .main-table .col-owner { width: 18%; text-align: left; }
+        .main-table .col-moto { width: 4%; text-align: center; }
+        .main-table .col-tax { width: 8%; text-align: center; }
+        .main-table .col-dag-no { width: 8%; text-align: center; }
+        .main-table .col-land-amount { width: 7%; text-align: center; }
+        .main-table .col-total-land { width: 7%; text-align: center; }
+        .main-table .col-khotian-part { width: 6%; text-align: center; }
+        .main-table .col-part-land { width: 7%; text-align: center; }
+        .main-table .col-remarks { width: 28%; text-align: left; }
+        .main-table .sub-head { font-size: 12px; font-weight: bold; }
+        .main-table .owner-block { line-height: 1.35; }
+        .main-table .owner-block .line { display: block; }
+        /* মার্ক করা অংশ: সব হরাইজনটাল লাইন সিঙ্গেল — এক পাশে বর্ডার */
+        .main-table tr.marked-row.last-before-note td { border-bottom: none; }
+        .main-table tr.remarks-below.before-section-note td {
+            border-bottom: none;
+            border-top: 0.5pt solid #000;
+            padding-top: 4px;
+            vertical-align: top;
+        }
+        .main-table tr.section-note-row td {
+            border-top: 0.5pt solid #000;
+            border-bottom: none;
+            padding-top: 4px;
+        }
+        .main-table tr.remarks-below.after-section-note td {
+            border-top: 0.5pt solid #000;
+            border-bottom: none;
+            padding-top: 4px;
+            vertical-align: top;
+        }
+        /* বাকি remarks-below */
+        .main-table tr.remarks-below td {
+            border-top: none;
+            padding-top: 4px;
+            vertical-align: top;
+        }
+        .main-table tr.remarks-below td.col-remarks-only {
+            border-left: 0.5pt solid #000;
+            border-right: 0.5pt solid #000;
+            border-bottom: 0.5pt solid #000;
+        }
+        /* মন্তব্য কলামে ডাবল লাইন ঠিক — এই দুই সারিতে নিচের দাগ বন্ধ */
+        .main-table tr.remarks-below.before-section-note td.col-remarks-only,
+        .main-table tr.remarks-below.after-section-note td.col-remarks-only {
+            border-bottom: none;
+        }
+        /* টেবিলের নিচে একটাই লাইন — ডাবল এড়াতে শুধু এই এলিমেন্ট দিয়ে */
+        .main-table-wrap {
+            margin-bottom: 0;
+        }
+        .table-bottom-line {
+            height: 0;
+            margin: 0;
+            padding: 0;
+            border: none;
+            border-top: 0.5pt solid #000;
+        }
+        /* লাস্ট টেবিল সারির নিচের দাগ সরিয়ে — নিচের লাইন .table-bottom-line দেবে */
+        .main-table tr.remarks-below.before-section-note td,
+        .main-table tr.remarks-below.after-section-note td {
+            border-bottom: none;
+        }
+        /* সই ব্লক - ৪টি পাশাপাশি */
+        .footer-sigs {
+            margin-top: 20px;
+            width: 100%;
+        }
+        /* প্রতিটি সই ব্লকের উপরে একটি করে লেবেল */
+        .sig-block-label {
+            margin-top: 8px;
+            margin-bottom: 8px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #000;
+            line-height: 1.4;
+        }
+        .sig-row {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+        .sig-block {
+            display: table-cell;
+            width: 25%;
+            padding: 6px 4px;
+            vertical-align: top;
+            text-align: center;
+            font-size: 12px;
+        }
+        .sig-block .sig-img-wrap { min-height: 36px; margin-bottom: 2px; }
+        /* সই শুধু আপলোড করলে দেখা যাবে — প্লেসহোল্ডার লাইন নেই */
+        .sig-block .sig-date-block {
+            margin-top: 4px;
+            padding-top: 2px;
+        }
+        /* তারিখের ঘর — পরিবর্তনযোগ্য, একেক সময় একেক তারিখ */
+        .sig-block .sig-date {
+            font-size: 9px;
+            color: #444;
+            margin: 0 auto;
+            display: inline-block;
+            min-width: 52px;
+            min-height: 14px;
+            padding: 3px 6px;
+            border: 0.5pt solid #666;
+            border-radius: 2px;
+            line-height: 1.3;
+        }
+        .sig-block .sig-name { font-weight: bold; margin-bottom: 2px; }
+        .sig-block .sig-designation { color: #333; }
+        .sig-block .sig-office { font-size: 11px; color: #444; }
+
+        /* বিশেষ দ্রষ্টব্য */
+        .special-notes {
+            margin-top: 16px;
+            padding: 8px 0 0 0;
+            border-top: 0.5pt solid #000;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        .special-notes .notes-title { font-weight: bold; margin-bottom: 6px; }
+        .special-notes ol { margin: 0; padding-right: 0; padding-left: 18px; }
+        .special-notes li { margin-bottom: 3px; }
+    </style>
+</head>
+<body>
+    <!-- শীর্ষ সারি: বাম = ফরম নং, মাঝ = খতিয়ান নং, ডান = QR + আবেদন তথ্য -->
+    <div class="top-row">
+        <div class="top-left">
+            <span class="form-no">বাংলাদেশ ফরম নং ৫৪৬২ (সংশোধিত)</span>
+        </div>
+        <div class="top-center">
+            <p class="khotian-title">খতিয়ান নং {{ khotian_no }}</p>
+        </div>
+        <div class="top-right">
+            <div class="qr-and-info">
+                {% if qr_url %}
+                <div class="qr-box">
+                    <img src="{{ qr_url }}" alt="QR Code">
+                </div>
+                {% endif %}
+                <div class="app-info">
+                    <span class="info-line">আবেদন নং: {{ application_no or '' }}</span>
+                    <span class="info-line">আবেদনের তারিখ: {{ application_date or '' }}</span>
+                    <span class="info-line">নামজারির মামলা নং: {{ mutation_case_no or '' }}</span>
+                    <span class="info-line">অনলাইন ডিসিআরনং। {{ online_dcr_no or '' }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- স্থানীয় তথ্য - এক লাইন -->
+    <div class="locality-line">
+        জেলা: {{ dist }} &nbsp;&nbsp; উপজেলা/সার্কেল: {{ upazila }} &nbsp;&nbsp; মৌজা: {{ mouza }} &nbsp;&nbsp; জে.এল.নং: {{ jl_no }}
+    </div>
+
+    <!-- মেইন টেবিল - ছবির কলাম হেডার ও কাঠামো হুবহু (ফরম ৫৪৬২) -->
+    <table class="main-table">
+        <thead>
+            <tr>
+                <th class="col-owner">মালিক, অকৃষি প্রজা বা ইজারাদারের নাম ও ঠিকানা</th>
+                <th class="col-moto">অংশ</th>
+                <th class="col-tax">ভূমি উন্নয়ন কর</th>
+                <th class="col-dag-no">দাগ/প্লট নং</th>
+                <th colspan="2">জমির শ্রেণী</th>
+                <th colspan="2">দাগের মোট জমির পরিমান</th>
+                <th class="col-khotian-part">অত্র খতিয়ানের অংশ</th>
+                <th colspan="2">অংশানুযায়ী জমির পরিমান</th>
+                <th class="col-remarks">দখল/স্বত্ত বিষয়ক বা অনান্য বিষয়ে মন্তব্য</th>
+            </tr>
+            <tr>
+                <th class="sub-head">১</th>
+                <th class="sub-head">২</th>
+                <th class="sub-head">৩</th>
+                <th class="sub-head">৪</th>
+                <th class="sub-head">কৃষি<br>৫ (ক)</th>
+                <th class="sub-head">অকৃষি<br>৫ (খ)</th>
+                <th class="sub-head">একর<br>৬ (ক)</th>
+                <th class="sub-head">শতাংশ<br>৬ (খ)</th>
+                <th class="sub-head">৭</th>
+                <th class="sub-head">একর<br>৮ (ক)</th>
+                <th class="sub-head">শতাংশ<br>৮ (খ)</th>
+                <th class="sub-head">৯</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in land_rows %}
+            <tr class="marked-row{% if loop.last %} last-before-note{% endif %}">
+                <td class="col-owner">
+                    <div class="owner-block">
+                        <span class="line">মালিক</span>
+                        <span class="line">{{ owner_name }}</span>
+                        {% if owner_father %}<span class="line"> পিতাঃ {{ owner_father }}</span>{% endif %}
+                        <span class="line">সাং- {{ mouza }}{% if post_office %}, ডাকঃ {{ post_office }}{% endif %}</span>
+                        <span class="line">উপজেলা: {{ upazila }},</span>
+                        <span class="line">জেলা: {{ dist }}।</span>
+                    </div>
+                </td>
+                <td class="col-moto">{{ row.share }}</td>
+                <td class="col-tax">{{ row.land_tax }}</td>
+                <td class="col-dag-no">{{ row.dag_plot_no }}</td>
+                <td class="col-land-amount">{{ row.land_class_agri }}</td>
+                <td class="col-land-amount">{{ row.land_class_non_agri }}</td>
+                <td class="col-total-land">{{ row.total_acre }}</td>
+                <td class="col-total-land">{{ row.total_decimal }}</td>
+                <td class="col-khotian-part">{{ row.lakh_share }}</td>
+                <td class="col-part-land">{{ row.part_acre }}</td>
+                <td class="col-part-land">{{ row.part_decimal }}</td>
+                <td class="col-remarks">{{ row.land_comments }}</td>
+            </tr>
+            <tr class="remarks-below{% if loop.last %} before-section-note{% endif %}">
+                <td colspan="11"></td>
+                <td class="col-remarks col-remarks-only"></td>
+            </tr>
+            {% else %}
+            <tr class="marked-row last-before-note">
+                <td class="col-owner">
+                    <div class="owner-block">
+                        <span class="line">মালিক</span>
+                        <span class="line">{{ owner_name }}</span>
+                        {% if owner_father %}<span class="line">পিতাঃ {{ owner_father }}</span>{% endif %}
+                        <span class="line">সাং- {{ mouza }}{% if post_office %}, ডাকঃ {{ post_office }}{% endif %}</span>
+                        <span class="line">উপজেলা: {{ upazila }},</span>
+                        <span class="line">জেলা: {{ dist }}।</span>
+                    </div>
+                </td>
+                <td class="col-moto">১</td>
+                <td class="col-tax">১০,০০</td>
+                <td class="col-dag-no"></td>
+                <td class="col-land-amount">ডাঙ্গা</td>
+                <td class="col-land-amount"></td>
+                <td class="col-total-land"></td>
+                <td class="col-total-land">১০</td>
+                <td class="col-khotian-part"></td>
+                <td class="col-part-land">১</td>
+                <td class="col-part-land">১০</td>
+                <td class="col-remarks"></td>
+            </tr>
+            <tr class="remarks-below before-section-note">
+                <td colspan="11"></td>
+                <td class="col-remarks col-remarks-only"></td>
+            </tr>
+            {% endfor %}
+            <!-- ধারামতে নোট সারি (মার্ক করা অংশের মতো) -->
+            <tr class="marked-row section-note-row">
+                <td class="col-owner">{{ section_note_text }}</td>
+                <td class="col-moto">{{ section_note_share }}</td>
+                <td class="col-tax"></td>
+                <td class="col-dag-no"></td>
+                <td class="col-land-amount"></td>
+                <td class="col-land-amount"></td>
+                <td class="col-total-land"></td>
+                <td class="col-total-land"></td>
+                <td class="col-khotian-part"></td>
+                <td class="col-part-land">{{ section_note_part_acre }}</td>
+                <td class="col-part-land">{{ section_note_part_decimal }}</td>
+                <td class="col-remarks"></td>
+            </tr>
+            <tr class="remarks-below after-section-note">
+                <td colspan="11"></td>
+                <td class="col-remarks col-remarks-only"></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="table-bottom-line"></div>
+
+    <!-- ৪টি সই ব্লক - ছবির ক্রম ও পদবী অনুযায়ী -->
+    <div class="footer-sigs">
+        <div class="sig-row">
+            <div class="sig-block">
+                <div class="sig-block-label">প্রস্তাবিত খতিয়ান</div>
+                <div class="sig-img-wrap">
+                    {% if seal_data_url %}<img src="{{ seal_data_url }}" style="height: 32px; width: auto; max-width: 56px;" alt="সিল">{% endif %}
+                    {% if sig_data_url_1 %}<img src="{{ sig_data_url_1 }}" style="height: 30px; width: auto; max-width: 70px;" alt="সই">{% endif %}
+                </div>
+                <div class="sig-date-block">
+                    <div class="sig-date">{{ sig_date_1 }}</div>
+                </div>
+                <div class="sig-name">({{ officer_name_1 }})</div>
+                <div class="sig-designation">{{ officer_designation_1 }}</div>
+            </div>
+            <div class="sig-block">
+                <div class="sig-block-label">যাচাইকৃত</div>
+                <div class="sig-img-wrap">
+                    {% if seal_data_url %}<img src="{{ seal_data_url }}" style="height: 32px; width: auto; max-width: 56px;" alt="সিল">{% endif %}
+                    {% if sig_data_url_2 %}<img src="{{ sig_data_url_2 }}" style="height: 30px; width: auto; max-width: 70px;" alt="সই">{% endif %}
+                </div>
+                <div class="sig-date-block">
+                    <div class="sig-date">{{ sig_date_2 }}</div>
+                </div>
+                <div class="sig-name">({{ officer_name_2 }})</div>
+                <div class="sig-designation">{{ officer_designation_2 }}</div>
+                <div class="sig-office">উপজেলা ভূমি অফিস</div>
+            </div>
+            <div class="sig-block">
+                <div class="sig-block-label">পরীক্ষিত</div>
+                <div class="sig-img-wrap">
+                    {% if seal_data_url %}<img src="{{ seal_data_url }}" style="height: 32px; width: auto; max-width: 56px;" alt="সিল">{% endif %}
+                    {% if sig_data_url_3 %}<img src="{{ sig_data_url_3 }}" style="height: 30px; width: auto; max-width: 70px;" alt="সই">{% endif %}
+                </div>
+                <div class="sig-date-block">
+                    <div class="sig-date">{{ sig_date_3 }}</div>
+                </div>
+                <div class="sig-name">({{ officer_name_3 }})</div>
+                <div class="sig-designation">{{ officer_designation_3 }}</div>
+                <div class="sig-office">উপজেলা ভূমি অফিস</div>
+            </div>
+            <div class="sig-block">
+                <div class="sig-block-label">অনুমোদিত</div>
+                <div class="sig-img-wrap">
+                    {% if seal_data_url %}<img src="{{ seal_data_url }}" style="height: 32px; width: auto; max-width: 56px;" alt="সিল">{% endif %}
+                    {% if sig_data_url_4 %}<img src="{{ sig_data_url_4 }}" style="height: 30px; width: auto; max-width: 70px;" alt="সই">{% endif %}
+                </div>
+                <div class="sig-date-block">
+                    <div class="sig-date">{{ sig_date_4 }}</div>
+                </div>
+                <div class="sig-name">({{ officer_name_4 }})</div>
+                <div class="sig-designation">{{ officer_designation_4 }}</div>
+                <div class="sig-office">উপজেলা ভূমি অফিস</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- বিশেষ দ্রষ্টব্য - ছবির ৪টি পয়েন্ট হুবহু -->
+    <div class="special-notes">
+        <div class="notes-title">বিশেষ দ্রষ্টব্য।</div>
+        <ol>
+            <li>এই সামজারি খতিয়ানটি অনলাইন মিউটেশন সিস্টেম কর্তৃক প্রণীত। ইহা আইনগতভাবে বৈধ ও সর্বক্ষেত্রে গ্রহণযোগ্য হবে।</li>
+            <li>অনলাইন খতিয়ানের সঠিকতা যাচাইয়ের জন্য কিউআর (QR) কোডটি স্ক্যান করে ভূমি মন্ত্রণালয়ের ওয়েবসাইট থেকে যাচাই করতে পারবেন।</li>
+            <li>ভূমি অফিস থেকে ম্যানুয়াল খতিয়ান সংগ্রহ করার প্রয়োজনীয়তা নেই।</li>
+            <li>ভূমি বিষয়ক যেকোন তথ্য বা পরামর্শের জন্য ১৬১২২ নম্বরে কল করুন।</li>
+        </ol>
+    </div>
+</body>
+</html>
