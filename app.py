@@ -2,6 +2,7 @@
 Porcha/Khotian PDF Generator - Flask App
 ল্যান্ড রেকর্ড (খতিয়ান) ডাইনামিক পিডিএফ জেনারেটর
 """
+
 from flask import Flask, render_template, request, send_file
 import pdfkit
 import qrcode
